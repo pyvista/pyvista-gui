@@ -7,3 +7,12 @@ processing and visualizing 3D data.
 ## Disclaimer
 
 This is currently a work in progress - things will break and change!
+
+
+## Get Started
+
+To launch, simply run:
+
+```bash
+python -m pyvista-gui
+```
