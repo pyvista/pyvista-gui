@@ -38,7 +38,7 @@ readme_file = os.path.join(filepath, 'README.md')
 
 setup(
     name=package_name,
-    packages=[package_name, 'pyvista_gui.core'],
+    packages=[package_name],
     version=__version__,
     description='Easier Pythonic interface to VTK',
     long_description=io_open(readme_file, encoding="utf-8").read(),
