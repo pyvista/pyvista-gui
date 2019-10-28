@@ -14,5 +14,5 @@ This is currently a work in progress - things will break and change!
 To launch, simply run:
 
 ```bash
-python -m pyvista-gui
+python -m pyvista_gui
 ```
