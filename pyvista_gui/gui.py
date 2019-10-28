@@ -247,6 +247,6 @@ class GUIWindow(QMainWindow):
         return item
 
 
-    def load_mesg(self):
+    def load_mesh(self):
         """Loads a mesh from file using a file dialog"""
         self.file_dialog = LoadMeshDialog(self, callback=self.data.load_meesh)
