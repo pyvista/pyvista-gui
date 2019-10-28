@@ -1,6 +1,6 @@
 # PyVista-GUI
 
-A plug 'n' play frameowrk for building commercial-grade applications built on
+A plug 'n' play framework for building commercial-grade applications built on
 top of PyVista. This module makes it simple to build (and prototype) an
 application for processing and visualizing 3D data.
 
