@@ -144,7 +144,7 @@ class GUIWindow(QMainWindow):
 
         # main menu
         # self.file_menu = self._build_file_menu()
-        self.view_menu = self._build_view_menu()
+        # self.view_menu = self._build_view_menu()
         # self.panels_menu = self._build_panels_menu()
         # self.help_menu = self._build_help_menu()
 
@@ -163,7 +163,6 @@ class GUIWindow(QMainWindow):
     def _closepbar(self):
         """ Only to be accessed by a signal call """
         self.pbar.signal_close()
-
 
     def _build_view_menu(self):
         """ Creates view menu """
@@ -201,7 +200,7 @@ class GUIWindow(QMainWindow):
         self.action_dark_mode.triggered.connect(self.enable_dark_mode)
         menu.addAction(self.action_dark_mode)
 
-        return menu
+        self.view_menu = menu
 
 
     def enable_dark_mode(self, state=True):
@@ -213,9 +212,10 @@ class GUIWindow(QMainWindow):
         self.console.enable_dark_mode(state)
         rcParams['dark_mode'] = state
 
-        self.action_dark_mode.blockSignals(True)
-        self.action_dark_mode.setChecked(state)
-        self.action_dark_mode.blockSignals(False)
+        if hasattr(self, 'action_dark_mode'):
+            self.action_dark_mode.blockSignals(True)
+            self.action_dark_mode.setChecked(state)
+            self.action_dark_mode.blockSignals(False)
 
 
     def change_background(self):
