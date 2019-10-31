@@ -190,10 +190,10 @@ class GUIWindow(QMainWindow):
             for key in cvec_setters.keys():
                 self.add_menu_item(sub_menu, key, cvec_setters[key])
 
-            action = QAction('Anti-Aliasing', menu, checkable=True)
-            action.setChecked(True)
-            action.triggered.connect(self.scene_widget.enable_anti_aliasing)
-            menu.addAction(action)
+            # action = QAction('Anti-Aliasing', menu, checkable=True)
+            # action.setChecked(True)
+            # action.triggered.connect(self.scene_widget.enable_anti_aliasing)
+            # menu.addAction(action)
 
         self.action_dark_mode = QAction('Dark Mode', menu, checkable=True)
         self.action_dark_mode.setChecked(rcParams['dark_mode'])
