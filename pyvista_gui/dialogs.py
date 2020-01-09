@@ -1,24 +1,14 @@
-"""
-Widget and associated tool tips for global morph settings.
-"""
+"""Widgets and associated tooltips"""
 import logging
-import os
 
-import numpy as np
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import (QApplication, QBoxLayout, QCheckBox, QColorDialog,
-                             QComboBox, QDialog, QDoubleSpinBox, QFileDialog,
-                             QFormLayout, QFrame, QGridLayout, QGroupBox,
-                             QHBoxLayout, QLabel, QLineEdit, QListWidget,
-                             QPushButton, QSizePolicy, QSlider, QSpinBox,
-                             QStackedWidget, QTabWidget, QVBoxLayout, QWidget)
+from PyQt5.QtWidgets import (QBoxLayout, QCheckBox, QColorDialog,
+                             QDialog, QFileDialog, QFormLayout,
+                             QFrame, QGroupBox, QLabel, QSlider,
+                             QVBoxLayout)
 
 LOG = logging.getLogger(__name__)
 LOG.setLevel('DEBUG')
-
-
-
-###############################################################################
 
 
 class ColorDialog(QColorDialog):
@@ -47,6 +37,11 @@ class ColorDialog(QColorDialog):
 class FileDialog(QFileDialog):
     """Generic file query that emits a signal when a file is selected
     and the dialog was property closed.
+
+    Examples
+    --------
+
+    >>> dlg = FileDialog(filefilter=["Text files (*.txt)", "Images (*.png *.jpg)"])
     """
     dlg_accepted = pyqtSignal(str)
 
@@ -82,7 +77,6 @@ class FileDialog(QFileDialog):
             self.dlg_accepted.emit(self.selectedFiles()[0])
 
 
-
 class ColorBox(QFrame):
 
     colorChanged = pyqtSignal(tuple)
@@ -112,7 +106,6 @@ class ColorBox(QFrame):
 
     def set_background(self, rgb):
         self.setStyleSheet("QWidget { background-color: rgb(%d,%d,%d); border:1px solid rgb(0, 0, 0); }" % rgb)
-
 
 
 class LoadMeshDialog(QDialog):
