@@ -2,21 +2,24 @@
 
 import datetime
 import logging
+import os
 
 import qdarkstyle
 from PyQt5.QtCore import Qt, pyqtSignal
-# from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (QAction, QDockWidget, QHBoxLayout,
                              QMainWindow, QMenu, QMessageBox, QProgressDialog,
-                             QSizePolicy, QSplitter, QVBoxLayout)
+                             QSizePolicy, QSplitter, QVBoxLayout, QMenuBar)
 
 from pyvista.plotting import Plotter, QtInteractor
 
 from pyvista_gui.console import QIPythonWidget
 from pyvista_gui.data import Data
-from pyvista_gui.dialogs import ColorDialog, LoadMeshDialog
+from pyvista_gui.dialogs import ColorDialog, LoadMeshDialog, FileDialog, ScaleAxesDialog
 from pyvista_gui.options import rcParams
 from pyvista_gui.widgets import QTextEditCommands, QTextEditLogger, TreeWidget
+
+from pyvista_gui import assets
 
 # from weakref import proxy
 # from functools import wraps
@@ -52,6 +55,7 @@ class GUIWindow(QMainWindow):
     trigger_render = pyqtSignal()
     errorsignal = pyqtSignal(str, str)
     closepbar_signal = pyqtSignal()
+    signal_close = pyqtSignal()
 
     def __init__(self, parent=None, app=None, show=True, off_screen_vtk=False):
         """ Generate window and initialize a scene """
@@ -67,6 +71,7 @@ class GUIWindow(QMainWindow):
 
         self.resize(800, 600)
         self.setWindowTitle('PyVista GUI')
+        self.update_app_icon()
 
         # tree and associated queries
         self.data = Data(self)
@@ -118,13 +123,17 @@ class GUIWindow(QMainWindow):
                              Qt.Horizontal)
 
             self.plotter.add_toolbars(self)
+            # build main menu
+            self.main_menu = QMenuBar(parent=self)
+            self.setMenuBar(self.main_menu)
+            self.signal_close.connect(self.main_menu.clear)
+            self.file_menu = self.create_file_menu()
+            self.view_menu = self.create_view_menu()
+            self.tools_menu = self.create_tools_menu()
 
         self.tabifyDockWidget(self.dock_console, self.dock_commands)
         self.tabifyDockWidget(self.dock_commands, self.dock_logger)
         self.dock_console.raise_()
-
-        # Create menu
-        self.make_menu()
 
         # connects
         self.trigger_render.connect(self.plotter.render)
@@ -139,16 +148,53 @@ class GUIWindow(QMainWindow):
             self.show()
 
 
-    def make_menu(self):
-        """ Generates menus """
-        self.menu = self.menuBar()
-        self.menu.setNativeMenuBar(False)
+    def scale_axes_dialog(self, show=True):
+        """Open scale axes dialog."""
+        return ScaleAxesDialog(self.app_window, self, show=show)
 
-        # main menu
-        # self.file_menu = self._build_file_menu()
-        self.view_menu = self._build_view_menu()
-        # self.panels_menu = self._build_panels_menu()
-        # self.help_menu = self._build_help_menu()
+
+    def create_file_menu(self):
+        file_menu = self.main_menu.addMenu('File')
+        file_menu.addAction('Take Screenshot', self._qt_screenshot)
+        file_menu.addAction('Export as VTKjs', self._qt_export_vtkjs)
+        file_menu.addSeparator()
+        file_menu.addAction('Exit', self.close)
+        return file_menu
+
+
+    def create_view_menu(self):
+        view_menu = self.main_menu.addMenu('View')
+        view_menu.addAction('Toggle Eye Dome Lighting', self._toggle_edl)
+        view_menu.addAction('Scale Axes', self.scale_axes_dialog)
+        view_menu.addAction('Clear All', self.plotter.clear)
+        cam_menu = view_menu.addMenu('Camera')
+        cam_menu.addAction('Toggle Parallel Projection', self._toggle_parallel_projection)
+
+        view_menu.addSeparator()
+        # Orientation marker
+        orien_menu = view_menu.addMenu('Orientation Marker')
+        orien_menu.addAction('Show All', self.plotter.show_axes_all)
+        orien_menu.addAction('Hide All', self.plotter.hide_axes_all)
+        # Bounds axes
+        axes_menu = view_menu.addMenu('Bounds Axes')
+        axes_menu.addAction('Add Bounds Axes (front)', self.plotter.show_bounds)
+        axes_menu.addAction('Add Bounds Grid (back)', self.plotter.show_grid)
+        axes_menu.addAction('Add Bounding Box', self.plotter.add_bounding_box)
+        axes_menu.addSeparator()
+        axes_menu.addAction('Remove Bounding Box', self.plotter.remove_bounding_box)
+        axes_menu.addAction('Remove Bounds', self.plotter.remove_bounds_axes)
+
+        # A final separator to separate OS options
+        view_menu.addSeparator()
+
+        return view_menu
+
+    def create_tools_menu(self):
+        tool_menu = self.main_menu.addMenu('Tools')
+        # TODO: add these when picking is fixed
+        # tool_menu.addAction('Enable Cell Picking (through)', self.plotter.enable_cell_picking)
+        # tool_menu.addAction('Enable Cell Picking (visible)', lambda: self.plotter.enable_cell_picking(through=False))
+        return tool_menu
 
 
     def error_dialog(self, txt, textinfo=None):
@@ -252,3 +298,44 @@ class GUIWindow(QMainWindow):
     def load_mesh(self):
         """Loads a mesh from file using a file dialog"""
         self.file_dialog = LoadMeshDialog(self, callback=self.data.load_meesh)
+
+
+    def _qt_screenshot(self, show=True):
+        return FileDialog(self,
+                          filefilter=['Image File (*.png)',
+                                      'JPEG (*.jpeg)'],
+                          show=show,
+                          directory=os.getcwd(),
+                          callback=self.plotter.screenshot)
+
+    def _qt_export_vtkjs(self, show=True):
+        """Spawn an save file dialog to export a vtkjs file."""
+        return FileDialog(self,
+                          filefilter=['VTK JS File(*.vtkjs)'],
+                          show=show,
+                          directory=os.getcwd(),
+                          callback=self.plotter.export_vtkjs)
+
+    def _toggle_edl(self):
+        if hasattr(self.plotter.renderer, 'edl_pass'):
+            return self.plotter.disable_eye_dome_lighting()
+        return self.plotter.enable_eye_dome_lighting()
+
+    def _toggle_parallel_projection(self):
+        if self.plotter.camera.GetParallelProjection():
+            return self.disable_parallel_projection()
+        return self.plotter.enable_parallel_projection()
+
+    def update_app_icon(self, icon_file=None):
+        """Update the app icon to an `ico` file."""
+        if os.name == 'nt':  # pragma: no cover
+            # DO NOT EVEN ATTEMPT TO UPDATE ICON ON WINDOWS
+            return False
+        if icon_file is None:
+            icon_file = assets.pyvista_logo_file
+        if os.path.isfile(icon_file):
+            self.setWindowIcon(QIcon(os.path.abspath(icon_file)))
+        else:
+            LOG.warning('Unable to find icon file: {}'.format(icon_file))
+            return False
+        return True

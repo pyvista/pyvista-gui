@@ -19,13 +19,6 @@ def main(debug=False, loglevel='DEBUG', script=None, off_screen_vtk=False):  # p
     app = QApplication(sys.argv)
     gui = GUIWindow(app=app, off_screen_vtk=off_screen_vtk)
 
-    # icon_file = resource_path('icon.ico')
-    # if os.path.isfile(icon_file):
-    #     icon = QIcon(icon_file)
-    #     gui.setWindowIcon(icon)
-    # else:
-    #     LOG.warning('Unable to find icon file')
-
     # if script is not None:
     #     if os.path.isfile(script):
     #         exec('gui.data.load_script("%s")' % script)

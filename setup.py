@@ -63,4 +63,5 @@ setup(
     keywords='vtk numpy plotting mesh gui',
     python_requires='>=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*',
     install_requires=install_requires,
+    package_data={'pyvista_gui.assets': ['pyvista_logo_square.ico']},
 )
