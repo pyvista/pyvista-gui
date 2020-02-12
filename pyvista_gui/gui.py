@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (QAction, QDockWidget, QHBoxLayout,
                              QSizePolicy, QSplitter, QVBoxLayout, QMenuBar)
 
 from pyvista.plotting import Plotter, QtInteractor
+import pyvista
 
 from pyvista_gui.console import QIPythonWidget
 from pyvista_gui.data import Data
@@ -157,6 +158,16 @@ class GUIWindow(QMainWindow):
         file_menu = self.main_menu.addMenu('File')
         file_menu.addAction('Take Screenshot', self._qt_screenshot)
         file_menu.addAction('Export as VTKjs', self._qt_export_vtkjs)
+
+        # TODO: place holder until we make this bettter
+        mesh_menu = file_menu.addMenu('Add Geometries')
+        mesh_menu.addAction('Arrow', lambda: self.plotter.add_mesh(pyvista.Arrow()))
+        mesh_menu.addAction('Cone', lambda: self.plotter.add_mesh(pyvista.Cone()))
+        mesh_menu.addAction('Cube', lambda: self.plotter.add_mesh(pyvista.Cube()))
+        mesh_menu.addAction('Cylinder', lambda: self.plotter.add_mesh(pyvista.Cylinder()))
+        mesh_menu.addAction('Sphere', lambda: self.plotter.add_mesh(pyvista.Sphere()))
+        mesh_menu.addAction('Wavelet', lambda: self.plotter.add_volume(pyvista.Wavelet()))
+
         file_menu.addSeparator()
         file_menu.addAction('Exit', self.close)
         return file_menu
@@ -183,6 +194,19 @@ class GUIWindow(QMainWindow):
         axes_menu.addSeparator()
         axes_menu.addAction('Remove Bounding Box', self.plotter.remove_bounding_box)
         axes_menu.addAction('Remove Bounds', self.plotter.remove_bounds_axes)
+
+        view_menu.addSeparator()
+
+        action = QAction('Anti-Aliasing', view_menu, checkable=True)
+        action.setChecked(True)
+        action.triggered.connect(self.plotter.enable_anti_aliasing)
+        view_menu.addAction(action)
+
+        self.action_dark_mode = QAction('Dark Mode', view_menu, checkable=True)
+        self.action_dark_mode.setChecked(rcParams['dark_mode'])
+        self.enable_dark_mode(rcParams['dark_mode'])
+        self.action_dark_mode.triggered.connect(self.enable_dark_mode)
+        view_menu.addAction(self.action_dark_mode)
 
         # A final separator to separate OS options
         view_menu.addSeparator()
@@ -211,45 +235,6 @@ class GUIWindow(QMainWindow):
     def _closepbar(self):
         """ Only to be accessed by a signal call """
         self.pbar.signal_close()
-
-    def _build_view_menu(self):
-        """ Creates view menu """
-        menu = self.menu.addMenu('View')
-        if not self.off_screen_vtk:
-            self.add_menu_item(menu, CHANGE_BACKGROUND_MENU_TEXT,
-                               self.change_background)
-
-            # Camera views
-            sub_menu = QMenu('Camera Positions', parent=self)
-            menu.addMenu(sub_menu)
-
-            _view_vector = lambda *args: self.plotter.view_vector(*args)
-            cvec_setters = {
-                # Viewing vector then view up vector - PyVista handles the rest
-                'Top (-Z)': lambda: _view_vector((0,0,1), (0,1,0)),
-                'Bottom (+Z)': lambda: _view_vector((0,0,-1), (0,1,0)),
-                'Front (-Y)': lambda: _view_vector((0,1,0), (0,0,1)),
-                'Back (+Y)': lambda: _view_vector((0,-1,0), (0,0,1)),
-                'Left (-X)': lambda: _view_vector((1,0,0), (0,0,1)),
-                'Right (+X)': lambda: _view_vector((-1,0,0), (0,0,1)),
-            }
-
-            for key in cvec_setters.keys():
-                self.add_menu_item(sub_menu, key, cvec_setters[key])
-
-            action = QAction('Anti-Aliasing', menu, checkable=True)
-            action.setChecked(True)
-            action.triggered.connect(self.plotter.enable_anti_aliasing)
-            menu.addAction(action)
-
-        self.action_dark_mode = QAction('Dark Mode', menu, checkable=True)
-        self.action_dark_mode.setChecked(rcParams['dark_mode'])
-        self.enable_dark_mode(rcParams['dark_mode'])
-        self.action_dark_mode.triggered.connect(self.enable_dark_mode)
-        menu.addAction(self.action_dark_mode)
-
-        self.view_menu = menu
-
 
     def enable_dark_mode(self, state=True):
         """ sets style sheet to dark mode """
