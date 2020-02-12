@@ -57,6 +57,8 @@ class QIPythonWidget(RichJupyterWidget):
                         'quit': exit,
                         'help': help})
 
+        self.execute("import pyvista as pv")
+
     @property
     def variables(self):
         """ Variables local to the qtconsole """
