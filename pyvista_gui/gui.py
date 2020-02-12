@@ -175,7 +175,7 @@ class GUIWindow(QMainWindow):
             sub_menu = QMenu('Camera Positions', parent=self)
             menu.addMenu(sub_menu)
 
-            _view_vector = lambda *args: self.plotter.signal_set_view_vector.emit(*args)
+            _view_vector = lambda *args: self.plotter.view_vector(*args)
             cvec_setters = {
                 # Viewing vector then view up vector - PyVista handles the rest
                 'Top (-Z)': lambda: _view_vector((0,0,1), (0,1,0)),
@@ -221,7 +221,7 @@ class GUIWindow(QMainWindow):
     def change_background(self):
         """ Pulls up change background dialog """
         self.color_dlg = ColorDialog(self)
-        self.color_dlg.color_picked.connect(self.plotter.signal_set_background.emit)
+        self.color_dlg.color_picked.connect(self.plotter.set_background)
 
 
     def add_menu_item(self, menu, text, func, addsep=False, enabled=True,
