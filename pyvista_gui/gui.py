@@ -117,6 +117,8 @@ class GUIWindow(QMainWindow):
             self.resizeDocks([self.dock_vtk, self.dock_tree], [4, 1],
                              Qt.Horizontal)
 
+            self.plotter.add_toolbars(self)
+
         self.tabifyDockWidget(self.dock_console, self.dock_commands)
         self.tabifyDockWidget(self.dock_commands, self.dock_logger)
         self.dock_console.raise_()
