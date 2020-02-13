@@ -53,7 +53,6 @@ CHANGE_BACKGROUND_MENU_TEXT = 'Change Background'
 
 class GUIWindow(QMainWindow):
     """ Primary GUI object """
-    trigger_render = pyqtSignal()
     errorsignal = pyqtSignal(str, str)
     closepbar_signal = pyqtSignal()
     signal_close = pyqtSignal()
@@ -126,6 +125,7 @@ class GUIWindow(QMainWindow):
             self.plotter.add_toolbars(self)
             # build main menu
             self.main_menu = QMenuBar(parent=self)
+            self.main_menu.setNativeMenuBar(False)
             self.setMenuBar(self.main_menu)
             self.signal_close.connect(self.main_menu.clear)
             self.file_menu = self.create_file_menu()
@@ -137,7 +137,6 @@ class GUIWindow(QMainWindow):
         self.dock_console.raise_()
 
         # connects
-        self.trigger_render.connect(self.plotter.render)
         self.errorsignal.connect(self.error_dialog)
         self.closepbar_signal.connect(self._closepbar)
         LOG.debug('GUI initialized')
