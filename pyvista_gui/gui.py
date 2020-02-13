@@ -103,11 +103,11 @@ class GUIWindow(QMainWindow):
 
         # vtk frame if available
         if off_screen_vtk:
-            self.scene_widget = Plotter(off_screen=True)
+            self.plotter = Plotter(off_screen=True)
         else:
-            self.scene_widget = QtInteractor(self)
+            self.plotter = QtInteractor(self)
             self.dock_vtk = QDockWidget('Viewer', self)
-            self.dock_vtk.setWidget(self.scene_widget)
+            self.dock_vtk.setWidget(self.plotter.interactor)
             self.addDockWidget(Qt.RightDockWidgetArea, self.dock_vtk)
 
             self.splitDockWidget(self.dock_tree, self.dock_vtk, Qt.Horizontal)
@@ -117,6 +117,8 @@ class GUIWindow(QMainWindow):
             self.resizeDocks([self.dock_vtk, self.dock_tree], [4, 1],
                              Qt.Horizontal)
 
+            self.plotter.add_toolbars(self)
+
         self.tabifyDockWidget(self.dock_console, self.dock_commands)
         self.tabifyDockWidget(self.dock_commands, self.dock_logger)
         self.dock_console.raise_()
@@ -125,7 +127,7 @@ class GUIWindow(QMainWindow):
         self.make_menu()
 
         # connects
-        self.trigger_render.connect(self.scene_widget._render)
+        self.trigger_render.connect(self.plotter.render)
         self.errorsignal.connect(self.error_dialog)
         self.closepbar_signal.connect(self._closepbar)
         LOG.debug('GUI initialized')
@@ -144,7 +146,7 @@ class GUIWindow(QMainWindow):
 
         # main menu
         # self.file_menu = self._build_file_menu()
-        # self.view_menu = self._build_view_menu()
+        self.view_menu = self._build_view_menu()
         # self.panels_menu = self._build_panels_menu()
         # self.help_menu = self._build_help_menu()
 
@@ -175,7 +177,7 @@ class GUIWindow(QMainWindow):
             sub_menu = QMenu('Camera Positions', parent=self)
             menu.addMenu(sub_menu)
 
-            _view_vector = lambda *args: self.scene_widget.signal_set_view_vector.emit(*args)
+            _view_vector = lambda *args: self.plotter.view_vector(*args)
             cvec_setters = {
                 # Viewing vector then view up vector - PyVista handles the rest
                 'Top (-Z)': lambda: _view_vector((0,0,1), (0,1,0)),
@@ -189,10 +191,10 @@ class GUIWindow(QMainWindow):
             for key in cvec_setters.keys():
                 self.add_menu_item(sub_menu, key, cvec_setters[key])
 
-            # action = QAction('Anti-Aliasing', menu, checkable=True)
-            # action.setChecked(True)
-            # action.triggered.connect(self.scene_widget.enable_anti_aliasing)
-            # menu.addAction(action)
+            action = QAction('Anti-Aliasing', menu, checkable=True)
+            action.setChecked(True)
+            action.triggered.connect(self.plotter.enable_anti_aliasing)
+            menu.addAction(action)
 
         self.action_dark_mode = QAction('Dark Mode', menu, checkable=True)
         self.action_dark_mode.setChecked(rcParams['dark_mode'])
@@ -221,7 +223,7 @@ class GUIWindow(QMainWindow):
     def change_background(self):
         """ Pulls up change background dialog """
         self.color_dlg = ColorDialog(self)
-        self.color_dlg.color_picked.connect(self.scene_widget.signal_set_background.emit)
+        self.color_dlg.color_picked.connect(self.plotter.set_background)
 
 
     def add_menu_item(self, menu, text, func, addsep=False, enabled=True,

@@ -112,8 +112,8 @@ class Data():
 
         # reset commands
         self.reset_stored_commands()
-        if hasattr(self.parent.scene_widget, 'reset'):
-            self.parent.scene_widget.reset()
+        if hasattr(self.parent.plotter, 'reset'):
+            self.parent.plotter.reset()
         self.parent.textedit_commands.clear()
 
         # clear gui widgets
