@@ -10,7 +10,8 @@ from PyQt5.QtWidgets import (QAction, QDockWidget, QHBoxLayout,
                              QMainWindow, QMenu, QMessageBox, QProgressDialog,
                              QSizePolicy, QSplitter, QVBoxLayout)
 
-from pyvista.plotting import Plotter, QtInteractor
+from pyvista.plotting import Plotter
+from pyvistaqt import QtInteractor
 
 from pyvista_gui.console import QIPythonWidget
 from pyvista_gui.data import Data
@@ -117,7 +118,7 @@ class GUIWindow(QMainWindow):
             self.resizeDocks([self.dock_vtk, self.dock_tree], [4, 1],
                              Qt.Horizontal)
 
-            self.plotter.add_toolbars(self)
+            # self.plotter.add_toolbars(self)
 
         self.tabifyDockWidget(self.dock_console, self.dock_commands)
         self.tabifyDockWidget(self.dock_commands, self.dock_logger)

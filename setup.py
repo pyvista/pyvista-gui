@@ -19,9 +19,12 @@ with io_open(version_file, mode='r') as fd:
 
 # pre-compiled vtk available for python3
 install_requires = ['pyvista>=0.22.4',
-                    'PyQt5==5.11.3',
+                    'PyQt5>=5.11.3',
                     'scooby>=0.2.2',
                     'matplotlib',
+                    'pyvistaqt',
+                    'qdarkstyle',
+                    'qtconsole'
                     ]
 
 # add vtk if not windows and 2.7
