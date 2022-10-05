@@ -4,12 +4,13 @@ import json
 import os
 
 import pyvista
+from pyvista.examples import USER_DATA_PATH
 
 
 class RcParams(dict):
     """Internally used class to manage the rcParams"""
 
-    filename = os.path.join(pyvista.USER_DATA_PATH, 'rcParams.json')
+    filename = os.path.join(USER_DATA_PATH, 'rcParams.json')
 
     def save(self):
         with open(self.filename, 'w') as f:
