@@ -143,9 +143,7 @@ class Data:
 
     def load_script_dialog(self):
         """Open up a file dialog to load a Python script"""
-        self.load_script_dlg = FileDialog(
-            self.parent, PY_FILE_FILTER, callback=self.load_script
-        )
+        self.load_script_dlg = FileDialog(self.parent, PY_FILE_FILTER, callback=self.load_script)
         return self.load_script_dlg
 
     def load_script(self, filename):

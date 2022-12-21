@@ -124,8 +124,7 @@ class ColorBox(QFrame):
 
     def set_background(self, rgb):
         self.setStyleSheet(
-            "QWidget { background-color: rgb(%d,%d,%d); border:1px solid rgb(0, 0, 0); }"
-            % rgb
+            "QWidget { background-color: rgb(%d,%d,%d); border:1px solid rgb(0, 0, 0); }" % rgb
         )
 
 

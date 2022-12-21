@@ -10,9 +10,7 @@ LOG = logging.getLogger(__name__)
 LOG.setLevel("DEBUG")
 
 
-def main(
-    debug=False, loglevel="DEBUG", script=None, off_screen_vtk=False
-):  # pragma: no cover
+def main(debug=False, loglevel="DEBUG", script=None, off_screen_vtk=False):  # pragma: no cover
     """Starts the PyVista GUI"""
 
     logging.getLogger().setLevel("CRITICAL")

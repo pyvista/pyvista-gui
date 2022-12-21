@@ -181,9 +181,7 @@ class GUIWindow(QMainWindow):
         """Creates view menu"""
         menu = self.menu.addMenu("View")
         if not self.off_screen_vtk:
-            self.add_menu_item(
-                menu, CHANGE_BACKGROUND_MENU_TEXT, self.change_background
-            )
+            self.add_menu_item(menu, CHANGE_BACKGROUND_MENU_TEXT, self.change_background)
 
             # Camera views
             sub_menu = QMenu("Camera Positions", parent=self)
@@ -235,9 +233,7 @@ class GUIWindow(QMainWindow):
         self.color_dlg = ColorDialog(self)
         self.color_dlg.color_picked.connect(self.plotter.set_background)
 
-    def add_menu_item(
-        self, menu, text, func, addsep=False, enabled=True, shortcut=None
-    ):
+    def add_menu_item(self, menu, text, func, addsep=False, enabled=True, shortcut=None):
         """Clean way of adding menu items"""
         item = QAction(text, self)
         if func:
