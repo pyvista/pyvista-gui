@@ -10,21 +10,22 @@ from pyvista.examples import USER_DATA_PATH
 class RcParams(dict):
     """Internally used class to manage the rcParams"""
 
-    filename = os.path.join(USER_DATA_PATH, 'rcParams.json')
+    filename = os.path.join(USER_DATA_PATH, "rcParams.json")
 
     def save(self):
-        with open(self.filename, 'w') as f:
+        with open(self.filename, "w") as f:
             json.dump(self, f)
         return
 
     def load(self):
-        with open(self.filename, 'r') as f:
+        with open(self.filename, "r") as f:
             data = json.load(f)
         self.update(data)
 
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, value)
         self.save()
+
 
 # The options
 rcParams = RcParams(

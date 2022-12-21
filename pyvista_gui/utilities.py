@@ -6,30 +6,30 @@ from functools import wraps
 from threading import Thread
 
 log = logging.getLogger(__name__)
-log.setLevel('DEBUG')
+log.setLevel("DEBUG")
 
 
 # python 2/3 string compatability
-if sys.version[0] == '2':
+if sys.version[0] == "2":
     from past.builtins import basestring
 else:
     basestring = str
 
 
 def build_command(obj, func, *args, **kwargs):
-    """ build a command for a non-gui session of pyvista """
+    """build a command for a non-gui session of pyvista"""
     import pyvista
 
     func_name = func.__name__
-    if func_name[0] == '_':
-       func_name = func_name[1:]
+    if func_name[0] == "_":
+        func_name = func_name[1:]
 
     # verify function is a method in a morph class
-    if not hasattr(obj, 'class_name'):
+    if not hasattr(obj, "class_name"):
         return
 
     if hasattr(pyvista, obj.class_name):
-        pyvista_class = eval('pyvista.%s' % obj.class_name)
+        pyvista_class = eval("pyvista.%s" % obj.class_name)
     else:
         return
 
@@ -47,7 +47,7 @@ def build_command(obj, func, *args, **kwargs):
         else:
             str_args.append(str(arg))
 
-    return '%s.%s(%s)' % (varname, func_name, ', '.join(str_args))
+    return "%s.%s(%s)" % (varname, func_name, ", ".join(str_args))
 
 
 def protected_thread(fn):
@@ -55,6 +55,7 @@ def protected_thread(fn):
     Calls a function using a thread.  Reports error under the
     assumption the first argument is a GuiCommon class.
     """
+
     @wraps(fn)
     def wrapper(*args, **kwargs):
         self = args[0]
@@ -68,7 +69,7 @@ def protected_thread(fn):
                 exc_info = sys.exc_info()
                 traceback.print_exception(*exc_info)
                 log.error(exception)
-                if hasattr(self, 'exceptions'):
+                if hasattr(self, "exceptions"):
                     self.exceptions.append(exception)
                 self.parent.show_error(exception)
 
@@ -81,7 +82,7 @@ def protected_thread(fn):
                 self.parent.app.processEvents()
                 time.sleep(0.1)
 
-        if hasattr(self, 'threads'):
+        if hasattr(self, "threads"):
             self.threads.append(thread)
         return thread
 
@@ -92,9 +93,11 @@ def protected_thread(fn):
 
 
 def threaded(fn):
-    """ calls a function using a thread """
+    """calls a function using a thread"""
+
     def wrapper(*args, **kwargs):
         thread = Thread(target=fn, args=args, kwargs=kwargs)
         thread.start()
         return thread
+
     return wrapper

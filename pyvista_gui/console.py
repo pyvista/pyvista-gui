@@ -6,11 +6,11 @@ import qdarkstyle
 from qtconsole.inprocess import QtInProcessKernelManager
 from qtconsole.rich_jupyter_widget import RichJupyterWidget
 
-FROZEN = getattr(sys, 'frozen', False)
+FROZEN = getattr(sys, "frozen", False)
 
 
 def _complete(self):
-    """ Performs completion at the current cursor location. """
+    """Performs completion at the current cursor location."""
     try:
         # Send the completion request to the kernel
         msg_id = self.kernel_client.complete(
@@ -19,7 +19,7 @@ def _complete(self):
         )
         pos = self._get_cursor().position()
         info = self._CompletionRequest(msg_id, pos)
-        self._request_info['complete'] = info
+        self._request_info["complete"] = info
     except:
         pass
 
@@ -27,11 +27,11 @@ def _complete(self):
 # disable completion when frozen
 if FROZEN:
     from qtconsole import frontend_widget
+
     frontend_widget.FrontendWidget._complete = _complete
 
 
 class QIPythonWidget(RichJupyterWidget):
-
     def __init__(self, parent, custom_banner=None, *args, **kwargs):
         super(QIPythonWidget, self).__init__(*args, **kwargs)
         if custom_banner is not None:
@@ -42,31 +42,28 @@ class QIPythonWidget(RichJupyterWidget):
 
         self.kernel_manager = QtInProcessKernelManager()
         self.kernel_manager.start_kernel(show_banner=False)
-        self.kernel_manager.kernel.gui = 'qt'
+        self.kernel_manager.kernel.gui = "qt"
         self.kernel_client = self._kernel_manager.client()
         self.kernel_client.start_channels()
         self.gui = parent
 
         # override "exit" function
         def exit():
-            """ Exit the pyvista_gui """
+            """Exit the pyvista_gui"""
             parent.close()
 
-        self.push_vars({'gui': parent,
-                        'exit': exit,
-                        'quit': exit,
-                        'help': help})
+        self.push_vars({"gui": parent, "exit": exit, "quit": exit, "help": help})
 
     @property
     def variables(self):
-        """ Variables local to the qtconsole """
-        return self.shell.ns_table['user_local']
+        """Variables local to the qtconsole"""
+        return self.shell.ns_table["user_local"]
 
     def clear_variables(self):
         varlist = list(self.variables)
         for var in varlist:
             variable = self.variables[var]
-            if hasattr(variable, 'remove'):
+            if hasattr(variable, "remove"):
                 try:
                     variable.remove()
                 except:
@@ -74,7 +71,7 @@ class QIPythonWidget(RichJupyterWidget):
 
     @property
     def shell(self):
-        """ Return shell object """
+        """Return shell object"""
         return self.kernel_manager.kernel.shell
 
     def enable_dark_mode(self, state):
@@ -90,7 +87,7 @@ class QIPythonWidget(RichJupyterWidget):
         self.shell.push(variables)
 
     def clear(self):
-        """ Clear the terminal """
+        """Clear the terminal"""
         self._control.clear()
 
     def execute_command(self, command):

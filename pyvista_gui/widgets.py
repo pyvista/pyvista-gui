@@ -22,7 +22,8 @@ class QTextEditLogger(QPlainTextEdit, logging.Handler):
 
 
 class QTextEditCommands(QPlainTextEdit):
-    """ Displays commands as they are run by the GUI """
+    """Displays commands as they are run by the GUI"""
+
     write_text_signal = pyqtSignal(str)
 
     def __init__(self, parent):
@@ -33,13 +34,13 @@ class QTextEditCommands(QPlainTextEdit):
         self.setFont(QFont("Courier", 12))
 
     def add_command(self, command):
-        """ Writes a command to the panel """
+        """Writes a command to the panel"""
         if command:
-            self.write_text_signal.emit('%s\n' % command)
+            self.write_text_signal.emit("%s\n" % command)
 
 
 class TreeWidget(QTreeView):
-    """ Displays objects as an object tree """
+    """Displays objects as an object tree"""
 
     def __init__(self, parent):
         super(TreeWidget, self).__init__(parent)
@@ -55,13 +56,13 @@ class TreeWidget(QTreeView):
         self.model.itemChanged.connect(self.edit_name)
 
     def edit_name(self, item):
-        """ Makes the name of the item in the tree matches the object name """
+        """Makes the name of the item in the tree matches the object name"""
         obj = item.data()
         if obj:
             obj.name = item.text()
 
     def addItem(self, item, header, mainheader=None, editable=True):
-        """ Adds item to tree """
+        """Adds item to tree"""
         if mainheader is None:
             finds = self.model.findItems(header)
             if not finds:
@@ -72,7 +73,7 @@ class TreeWidget(QTreeView):
         else:
             finds = self.model.findItems(mainheader)
             if not finds:
-                raise Exception('main header %s does not exist' % mainheader)
+                raise Exception("main header %s does not exist" % mainheader)
             main_itemheader = finds[0]
 
             for i in range(main_itemheader.rowCount()):
@@ -87,7 +88,7 @@ class TreeWidget(QTreeView):
         itemheader.appendRow(standardItem)
 
     def open_menu(self, position):  # pragma: no cover
-        """ Activates when right click in tree """
+        """Activates when right click in tree"""
         index = self.selectedIndexes()
 
         if not index:
@@ -95,13 +96,13 @@ class TreeWidget(QTreeView):
         item = self.model.itemFromIndex(index[0])
         obj = item.data()
 
-        if hasattr(obj, 'menu'):
+        if hasattr(obj, "menu"):
             menu = obj.menu
             menu.exec_(self.viewport().mapToGlobal(position))
             return menu
 
     def remove_item(self, data):
-        """ removes an item from the modal list """
+        """removes an item from the modal list"""
         removed = False
         # check each header for a match
         for i in range(self.model.rowCount()):

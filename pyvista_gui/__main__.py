@@ -7,14 +7,15 @@ from PyQt5.QtWidgets import QApplication
 from pyvista_gui.gui import GUIWindow
 
 LOG = logging.getLogger(__name__)
-LOG.setLevel('DEBUG')
+LOG.setLevel("DEBUG")
 
 
+def main(
+    debug=False, loglevel="DEBUG", script=None, off_screen_vtk=False
+):  # pragma: no cover
+    """Starts the PyVista GUI"""
 
-def main(debug=False, loglevel='DEBUG', script=None, off_screen_vtk=False):  # pragma: no cover
-    """ Starts the PyVista GUI """
-
-    logging.getLogger().setLevel('CRITICAL')
+    logging.getLogger().setLevel("CRITICAL")
 
     app = QApplication(sys.argv)
     gui = GUIWindow(app=app, off_screen_vtk=off_screen_vtk)
@@ -37,16 +38,14 @@ def main(debug=False, loglevel='DEBUG', script=None, off_screen_vtk=False):  # p
     # always start in home directory
     try:
         from pathlib import Path
+
         home = str(Path.home())
         os.chdir(home)
     except:
-        LOG.warning('Unable to change to home directory')
+        LOG.warning("Unable to change to home directory")
 
     app.exec_()
 
 
-
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

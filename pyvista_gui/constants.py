@@ -1,1 +1,1 @@
-PY_FILE_FILTER = ['Python Script (*.py)']
+PY_FILE_FILTER = ["Python Script (*.py)"]

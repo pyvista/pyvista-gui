@@ -2,13 +2,22 @@
 import logging
 
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import (QBoxLayout, QCheckBox, QColorDialog,
-                             QDialog, QFileDialog, QFormLayout,
-                             QFrame, QGroupBox, QLabel, QSlider,
-                             QVBoxLayout)
+from PyQt5.QtWidgets import (
+    QBoxLayout,
+    QCheckBox,
+    QColorDialog,
+    QDialog,
+    QFileDialog,
+    QFormLayout,
+    QFrame,
+    QGroupBox,
+    QLabel,
+    QSlider,
+    QVBoxLayout,
+)
 
 LOG = logging.getLogger(__name__)
-LOG.setLevel('DEBUG')
+LOG.setLevel("DEBUG")
 
 
 class ColorDialog(QColorDialog):
@@ -16,6 +25,7 @@ class ColorDialog(QColorDialog):
     Color dialog query that emits a signal when a color is selected
     the dialog was property closed.
     """
+
     color_picked = pyqtSignal(tuple)
 
     def __init__(self, parent=None):
@@ -30,7 +40,7 @@ class ColorDialog(QColorDialog):
         Sends:
         fem_filename, has_thickness, is_rotor
         """
-        rgb = (color.red()/255.0, color.green()/255.0, color.blue()/255.0)
+        rgb = (color.red() / 255.0, color.green() / 255.0, color.blue() / 255.0)
         self.color_picked.emit(rgb)
 
 
@@ -43,10 +53,18 @@ class FileDialog(QFileDialog):
 
     >>> dlg = FileDialog(filefilter=["Text files (*.txt)", "Images (*.png *.jpg)"])
     """
+
     dlg_accepted = pyqtSignal(str)
 
-    def __init__(self, parent=None, filefilter=None, save_mode=False,
-                 show=True, callback=None, directory=False):
+    def __init__(
+        self,
+        parent=None,
+        filefilter=None,
+        save_mode=False,
+        show=True,
+        callback=None,
+        directory=False,
+    ):
         super(FileDialog, self).__init__(parent)
 
         if filefilter is not None:
@@ -99,23 +117,27 @@ class ColorBox(QFrame):
                 self.colorChanged.emit(self.downscale_rgb(rgb))
 
     def upscale_rgb(self, rgb):
-        return (int(rgb[0]*255), int(rgb[1]*255), int(rgb[2]*255))
+        return (int(rgb[0] * 255), int(rgb[1] * 255), int(rgb[2] * 255))
 
     def downscale_rgb(self, rgb):
-        return (rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0)
+        return (rgb[0] / 255.0, rgb[1] / 255.0, rgb[2] / 255.0)
 
     def set_background(self, rgb):
-        self.setStyleSheet("QWidget { background-color: rgb(%d,%d,%d); border:1px solid rgb(0, 0, 0); }" % rgb)
+        self.setStyleSheet(
+            "QWidget { background-color: rgb(%d,%d,%d); border:1px solid rgb(0, 0, 0); }"
+            % rgb
+        )
 
 
 class LoadMeshDialog(QDialog):
-    """ Custom file dialog to open up PyVista-supported files """
+    """Custom file dialog to open up PyVista-supported files"""
+
     accepted = pyqtSignal(str, bool)
 
     def __init__(self, parent=None, show=True, callback=None):
         super().__init__(parent)
         main_dialog = QDialog()
-        main_dialog.setWindowTitle('Select CFD File')
+        main_dialog.setWindowTitle("Select CFD File")
         layout = QVBoxLayout(main_dialog)
 
         self.file_dialog = QFileDialog(main_dialog, Qt.Widget)
@@ -128,12 +150,12 @@ class LoadMeshDialog(QDialog):
         layout.addWidget(self.file_dialog)
 
         form_layout = QFormLayout(self)
-        settings_groupbox = QGroupBox('Settings')
+        settings_groupbox = QGroupBox("Settings")
 
         self.isrotor_checkbox = QCheckBox(self)
         self.isrotor_checkbox.setChecked(False)
-        self.isrotor_checkbox.setToolTip('CFD grids are a sector of a rotor')
-        form_layout.addRow('Sector', self.isrotor_checkbox)
+        self.isrotor_checkbox.setToolTip("CFD grids are a sector of a rotor")
+        form_layout.addRow("Sector", self.isrotor_checkbox)
 
         settings_groupbox.setLayout(form_layout)
         layout.addWidget(settings_groupbox)
@@ -157,8 +179,7 @@ class LoadMeshDialog(QDialog):
         cfd_filename, is_rotor
         """
         if result:
-            self.accepted.emit(self.file_dialog.selectedFiles()[0],
-                               self.is_rotor)
+            self.accepted.emit(self.file_dialog.selectedFiles()[0], self.is_rotor)
 
 
 class SlidersGroup(QGroupBox):
@@ -187,7 +208,7 @@ class SlidersGroup(QGroupBox):
         slidersLayout = QBoxLayout(QBoxLayout.TopToBottom)
         slidersLayout.addWidget(self.nocheck_slider)
         slidersLayout.addWidget(self.fixed_slider)
-        slidersLayout.addWidget(QLabel(''))
+        slidersLayout.addWidget(QLabel(""))
         self.setLayout(slidersLayout)
 
     def setEnabled(self, value):
@@ -195,21 +216,21 @@ class SlidersGroup(QGroupBox):
         self.nocheck_slider.setEnabled(value)
 
     def set_fixed_value(self, value):
-        value = value*1000
+        value = value * 1000
         self.fixed_slider.setValue(value)
         if self.nocheck_slider.value() > value:
             self.nocheck_slider.setValue(value)
 
     def set_nocheck_value(self, value):
-        value = value*1000
+        value = value * 1000
         self.nocheck_slider.setValue(value)
         if self.fixed_slider.value() < value:
             self.fixed_slider.setValue(value)
 
     def setMinimum(self, value):
-        self.fixed_slider.setMinimum(value*1000)
-        self.nocheck_slider.setMinimum(value*1000)
+        self.fixed_slider.setMinimum(value * 1000)
+        self.nocheck_slider.setMinimum(value * 1000)
 
     def setMaximum(self, value):
-        self.fixed_slider.setMaximum(value*1000)
-        self.nocheck_slider.setMaximum(value*1000)
+        self.fixed_slider.setMaximum(value * 1000)
+        self.nocheck_slider.setMaximum(value * 1000)
