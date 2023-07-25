@@ -96,7 +96,6 @@ class FileDialog(QFileDialog):
 
 
 class ColorBox(QFrame):
-
     colorChanged = pyqtSignal(tuple)
 
     def __init__(self, parent=None, rgb=[1, 1, 1]):
@@ -182,7 +181,6 @@ class LoadMeshDialog(QDialog):
 
 
 class SlidersGroup(QGroupBox):
-
     nocheckvalueChanged = pyqtSignal(int)
     fixedvalueChanged = pyqtSignal(int)
 
