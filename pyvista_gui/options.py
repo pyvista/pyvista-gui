@@ -1,5 +1,6 @@
 """Options for saving user prefences, etc.
 """
+
 import json
 import os
 

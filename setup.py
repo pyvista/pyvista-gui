@@ -1,6 +1,7 @@
 """
 Installation file for python pyvista_gui module
 """
+
 import os
 from io import open as io_open
 

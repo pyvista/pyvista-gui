@@ -1,4 +1,5 @@
 """pyvista_gui data module"""
+
 import logging
 import os
 
