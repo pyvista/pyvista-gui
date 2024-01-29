@@ -1,4 +1,5 @@
 """Widgets and associated tooltips"""
+
 import logging
 
 from PyQt5.QtCore import Qt, pyqtSignal
