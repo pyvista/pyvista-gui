@@ -28,6 +28,10 @@ class RcParams(dict):
         self.save()
 
 
+# Use pyvista method to create USER_DATA_PATH
+if not os.path.isdir(USER_DATA_PATH):
+    pyvista.examples.delete_downloads()
+
 # The options
 rcParams = RcParams(
     dark_mode=False,
