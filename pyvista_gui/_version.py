@@ -1,4 +1,4 @@
-""" version info for pyvista_gui """
+"""version info for pyvista_gui"""
 
 # major, minor, patch
 version_info = 0, 1, 1
