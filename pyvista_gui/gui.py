@@ -1,4 +1,4 @@
-""" This is the main GUI """
+"""This is the main GUI"""
 
 import datetime
 import logging

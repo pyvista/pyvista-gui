@@ -1,5 +1,4 @@
-"""Options for saving user prefences, etc.
-"""
+"""Options for saving user prefences, etc."""
 
 import json
 import os
