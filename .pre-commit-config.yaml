@@ -6,7 +6,7 @@ repos:
 #   - id: isort
 
 - repo: https://github.com/psf/black
-  rev: 25.1.0
+  rev: 25.9.0
   hooks:
   - id: black
     args:
@@ -39,6 +39,6 @@ repos:
 
 # this validates our github workflow files
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.33.3
+  rev: 0.34.0
   hooks:
     - id: check-github-workflows
