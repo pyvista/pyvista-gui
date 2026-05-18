@@ -43,16 +43,13 @@ LOG.setLevel("DEBUG")
 
 
 NOW = datetime.datetime.now()
-ABOUT_TEXT = (
-    """PyVista Graphical User Interface
+ABOUT_TEXT = """PyVista Graphical User Interface
 Copyright %d
 
 Written by the PyVista Developers
 info@pyvista.org
 
-"""
-    % NOW.year
-)
+""" % NOW.year
 
 
 CHANGE_BACKGROUND_MENU_TEXT = "Change Background"
